@@ -1,3 +1,8 @@
+commands------------
+docker-compose run app sh -c "python manage.py createsuperuser" - for creating admin, super user
+docker-compose up - runs the application
+docker-compose run app sh -c "python manage.py test" - run tests, tests- should start with filename as test
+
 ----------------------------UNIT TEST-------------------------------
 remember that the file should start with test, and the folder in which it is present should also contain __init__.py file (since that's what makes it a Python module!).
 small_unit_Test_example
