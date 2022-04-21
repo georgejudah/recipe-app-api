@@ -51,3 +51,46 @@ DATABASES = {
 
     }
 }
+
+--------- Testing - Mocking------------------
+
+Never write Unit tests that depend on external services- can't guarantee that they will be available
+Never send spam emails
+which will end up clogging up email server
+
+Use mocking to avoid sending an actual email, by using an mocking object- u can still check the function working
+with the parameters
+--------------------------------------------------------
+----- Application DB reliable, wait for DB to get up and running before trying to connect to it-------
+
+
+
+-----------MAKE DOCKER COMPOSE WAIT FOR DB---------------------------
+ command: >
+     sh -c "python manage.py wait_for_db && 
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:80000"
+
+but before that main app > core > mkdir management > mkdir commands touch __init__.py> cd commands > touch __init__.py > touch wait_for_db.py
+
+inside wait_for_db.py,
+import time
+
+from django.db import connections
+from django.db.utils import OperationalError
+from django.core.management.base import BaseCommand
+
+class Command(BaseCommand):
+    """Django command to pause execution until database is available"""
+
+    def handle(self, *args, **options):
+        self.stdout.write('Waiting for database.....')
+        db_conn = None
+        while not db_conn:
+            try:
+                db_conn = connections['default']
+            except OperationalError:
+                self.stdout.write('Database is unavailable, waiting 1 second')
+                time.sleep(1)
+        self.stdout.write(self.style.SUCCESS('Database available!'))
+----------------------------------------------------------------------------
