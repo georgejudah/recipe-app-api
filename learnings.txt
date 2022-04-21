@@ -12,3 +12,42 @@ class CalcTests(TestCase):
         """Test that the two numbers are subtracted and returned"""
         
         self.assertEqual(subtract(6,3), 3)
+
+---------Docker Compose DB ----------------------------------------------------
+post_gres docker hub - https://hub.docker.com/_/postgres/
+https://gist.github.com/LondonAppDev/d9fc723784146650c7032a5752e7a9b - db docker compose config
+
+env variables in docker compose
+https://docs.docker.com/compose/environment-variables/
+environment:
+        - POSTGRES_DB=app
+        - POSTGRES_USER = postgres
+        - POSTGRES_PASSWORD = supersecretpassword
+
+then, requirements.txt for postgres
+psycopg2>=2.7.5,<2.8.0
+
+in docker file
+COPY ./requirements.txt /requirements.txt
+RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc libc-dev linux-headers postgresql-dev
+RUN pip install -r /requirements.txt
+
+this is the important line we add
+RUN apk add --update --no-cache postgresql-client- #absolute min footprint
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc libc-dev linux-headers postgresql-dev
+
+
+--------------- settings.py config for postgresql ---------------------------
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql',
+        'HOST' :    os.environ.get('DB_HOST'),
+        'NAME' : os.environ.get('DB_NAME'),
+        'USER' : os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'), 
+
+    }
+}
