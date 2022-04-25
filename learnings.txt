@@ -1,4 +1,8 @@
 commands------------
+docker buiid . - identifies docker files and builts an container
+docker-compose build  - identifies docker-compose and builds a container
+docker-compose run app sh -c "django-admin.py startproject app ." - create a new project
+#we use docker compose to run multiple services, such as python container and database container
 docker-compose run app sh -c "python manage.py createsuperuser" - for creating admin, super user
 docker-compose up - runs the application
 docker-compose run app sh -c "python manage.py test" - run tests, tests- should start with filename as test
